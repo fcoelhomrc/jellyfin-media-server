@@ -15,7 +15,12 @@ spec:
     spec:
       containers:
         - name: jellyfin
-          image: docker.io/jellyfin/jellyfin:preview
+          image: ghcr.io/hotio/jellyfin:latest
+          env:
+            - name: UMASK
+              value: "002"
+            - name: JELLYFIN_CACHE_DIR
+              value: /cache
           ports:
             - name: http
               containerPort: 8096
