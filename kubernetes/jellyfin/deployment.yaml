@@ -6,16 +6,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jellyfin
+      app.kubernetes.io/name: jellyfin
   template:
     metadata:
       labels:
-        app: jellyfin
+        app.kubernetes.io/name: jellyfin
     spec:
       containers:
         - name: jellyfin
-          image: docker.io/jellyfin/jellyfin:preview      
-          # just documentation, need a Service to open them
+          image: docker.io/jellyfin/jellyfin:preview
           ports:
             - name: http
               containerPort: 8096
@@ -23,22 +22,22 @@ spec:
             - name: discovery
               containerPort: 7359
               protocol: UDP
-          # declared below 
           volumeMounts:
             - name: config
-              mountPath: /config  # mount path inside container 
-            - name: media
+              mountPath: /config
+            - name: data
               mountPath: /media
+              subPath: media
+              readOnly: true
             - name: cache
               mountPath: /cache
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: jellyfin-config
-        - name: media
+        - name: data
           persistentVolumeClaim:
-            claimName: jellyfin-media
+            claimName: data
         - name: cache
           emptyDir:
             sizeLimit: 50Gi
-

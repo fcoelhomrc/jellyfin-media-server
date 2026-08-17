@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyfin-media
+  name: data
 spec:
   storageClassName: ""
-  volumeName: jellyfin-media
+  volumeName: data
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem

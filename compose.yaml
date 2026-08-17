@@ -11,9 +11,9 @@ services:
       - ./config:/config
       - ./cache:/cache
       - type: bind
-        source: ./media
+        source: ./data/media
         target: /media
-        read_only: false 
+        read_only: true
       # Optional - extra fonts to be used during transcoding with subtitle burn-in
       # - type: bind
       #   source: /path/to/fonts

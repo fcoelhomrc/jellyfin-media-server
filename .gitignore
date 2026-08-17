@@ -1,0 +1,11 @@
+# Runtime data
+/cache/
+/config/
+/data/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.secret.yaml
+kubeconfig
