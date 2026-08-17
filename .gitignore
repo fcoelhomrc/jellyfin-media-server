@@ -2,6 +2,7 @@
 /cache/
 /config/
 /data/
+/app-config/
 
 # Local environment and credentials
 .env

@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: data
+  name: seerr-config
   namespace: media
 spec:
   storageClassName: ""
-  volumeName: data
+  volumeName: seerr-config
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 100Gi
+      storage: 5Gi

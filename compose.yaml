@@ -8,7 +8,7 @@ services:
       - 8096:8096/tcp
       - 7359:7359/udp
     volumes:
-      - ./config:/config
+      - ./app-config/jellyfin:/config
       - ./cache:/cache
       - type: bind
         source: ./data/media
