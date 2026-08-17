@@ -19,6 +19,22 @@ spec:
           env:
             - name: UMASK
               value: "002"
+            - name: VPN_ENABLED
+              value: "true"
+            - name: VPN_CONF
+              value: wg0
+            - name: VPN_PROVIDER
+              value: "proton"
+            - name: VPN_AUTO_PORT_FORWARD
+              value: "true"
+            - name: VPN_HEALTHCHECK_ENABLED
+              value: "false"
+            - name: WEBUI_PORTS
+              value: 8080/tcp
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
           ports:
             - name: http
               containerPort: 8080
