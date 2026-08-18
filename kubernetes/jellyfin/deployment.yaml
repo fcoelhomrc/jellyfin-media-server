@@ -19,6 +19,12 @@ spec:
           env:
             - name: UMASK
               value: "002"
+            - name: JELLYFIN_CONFIG_DIR
+              value: /config/config
+            - name: JELLYFIN_DATA_DIR
+              value: /config/data
+            - name: JELLYFIN_LOG_DIR
+              value: /config/log
             - name: JELLYFIN_CACHE_DIR
               value: /cache
           ports:
