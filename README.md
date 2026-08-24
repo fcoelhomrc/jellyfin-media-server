@@ -9,6 +9,7 @@ The stack runs in the `media` namespace and consists of:
 - Jellyfin for serving the library
 - Seerr for media requests
 - Sonarr and Radarr for library management
+- Bazarr for subtitle automation
 - Prowlarr for indexer management
 - qBittorrent for downloads, with its traffic routed through a Proton WireGuard
   connection
@@ -60,7 +61,7 @@ And this is how the stack is deployed in Kubernetes (props to Kubediagrams for a
 
 Jellyfin and Seerr use `LoadBalancer` Services. We don't support autoscaling, but using the ServiceLB included in k3s is convenient because it uses the expected ports instead of NodePorts in the Kubernetes range.
 
-The administration interfaces for Sonarr, Radarr, Prowlarr, and qBittorrent
+The administration interfaces for Sonarr, Radarr, Bazarr, Prowlarr, and qBittorrent
 remain inside the cluster and can be reached locally with `port-forward.sh`.
 The script is just a wrapper around `kubectl port-forward` calls for each app.
 
@@ -70,6 +71,7 @@ The script is just a wrapper around `kubectl port-forward` calls for each app.
 | Seerr | 5055/TCP | LoadBalancer |
 | Sonarr | 8989/TCP | ClusterIP |
 | Radarr | 7878/TCP | ClusterIP |
+| Bazarr | 6767/TCP | ClusterIP |
 | Prowlarr | 9696/TCP | ClusterIP |
 | qBittorrent | 8080/TCP | ClusterIP |
 
@@ -79,9 +81,16 @@ This setup uses static local PersistentVolumes rather than a dynamic storage
 provisioner. Every PV is tied to the node named `walnut` and uses a path below
 `/home/felipe/jellyfin`.
 
-There is one 100 Gi volume shared by Sonarr, Radarr, qBittorrent, and Jellyfin.
+There is one 100 Gi volume shared by Sonarr, Radarr, Bazarr, qBittorrent, and Jellyfin.
 Each application also has its own configuration volume. The reclaim policy is
 `Retain`, so deleting a claim does not remove the files from disk.
+
+Bazarr writes downloaded subtitle files alongside the corresponding movies and
+episodes below `/data/media`, allowing Jellyfin to discover them during library
+scans. Its settings, database, logs, and backups remain in its separate `/config`
+volume. Configure its Sonarr and Radarr connections using the cluster-local URLs
+`http://sonarr:8989` and `http://radarr:7878`, respectively; all three applications
+see identical media paths below `/data`.
 
 Jellyfin also needs a cache to write transcoding segments and other temporary files.
 It is mounted as an emptyDir ephemeral volume, so it follows the Pod lifecycle (eg. we don't keep stale caches when rolling out a Deployment update).
@@ -90,7 +99,7 @@ Before applying the manifests, create the directories used by the volumes:
 
 ```bash
 mkdir -p data/media
-mkdir -p app-config/{jellyfin,prowlarr,qbittorrent,radarr,seerr,sonarr}
+mkdir -p app-config/{bazarr,jellyfin,prowlarr,qbittorrent,radarr,seerr,sonarr}
 ```
 
 If this is being deployed somewhere else, update the hostname and local paths
@@ -108,7 +117,7 @@ Apply the namespace and storage before the workloads:
 kubectl apply -f kubernetes/namespace.yaml
 kubectl apply -f kubernetes/storage/
 
-for app in jellyfin prowlarr qbittorrent radarr seerr sonarr; do
+for app in bazarr jellyfin prowlarr qbittorrent radarr seerr sonarr; do
   kubectl apply -f "kubernetes/$app/"
 done
 ```
