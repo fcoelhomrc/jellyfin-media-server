@@ -17,8 +17,14 @@ spec:
         - name: bazarr
           image: ghcr.io/hotio/bazarr:latest
           env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
             - name: UMASK
               value: "002"
+            - name: TZ
+              value: Etc/UTC
           ports:
             - name: http
               containerPort: 6767
