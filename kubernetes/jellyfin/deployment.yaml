@@ -20,7 +20,7 @@ spec:
             - name: UMASK
               value: "002"
             - name: JELLYFIN_CONFIG_DIR
-              value: /config/config
+              value: /config
             - name: JELLYFIN_DATA_DIR
               value: /config/data
             - name: JELLYFIN_LOG_DIR
